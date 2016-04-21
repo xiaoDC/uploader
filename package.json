@@ -1,0 +1,15 @@
+{
+  "name": "tuya-upload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.airtake.me:10080/tuya/tuya-upload.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
