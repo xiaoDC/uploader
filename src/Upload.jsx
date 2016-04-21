@@ -64,4 +64,4 @@ const Upload = React.createClass({
 
 });
 
-exports default Upload;
+export default Upload;

@@ -11,13 +11,13 @@ function getError(option, xhr) {
 function getBody(xhr) {
   const text = xhr.responseText || xhr.response;
   if (!text) {
-    retrun text;
+    return text;
   }
 
   try {
-    retrun JSON.parse(text);
+    return JSON.parse(text);
   } catch (e) {
-    retrun text;
+    return text;
   }
 }
 
@@ -53,7 +53,7 @@ export default function upload(option) {
 
   xhr.onload = function onload() {
     if (xhr.status != 200) {
-      retrun option.onError(getError(option, xhr), getBody(xhr));
+      return option.onError(getError(option, xhr), getBody(xhr));
     }
     option.onSuccess(getBody(xhr));
   };

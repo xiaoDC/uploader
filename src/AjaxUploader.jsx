@@ -67,7 +67,7 @@ const AjaxUploader = React.createClass({
     const props = this.props;
 
     if (!props.beforeUpload) {
-      retrun this.post(file);
+      return this.post(file);
     }
 
     const before = props.beforeUpload;
@@ -78,7 +78,7 @@ const AjaxUploader = React.createClass({
     } else if (before !== false) {
       this.post(file);
     }
-  }
+  },
 
   post(file) {
     const props = this.props;
@@ -102,9 +102,8 @@ const AjaxUploader = React.createClass({
       onError: (err, ret) => {
         props.onError(err, ret, file);
       },
-    })
-
-  }
+    });
+  },
 
   render() {
     const hidden = { dispaly: 'none' };
