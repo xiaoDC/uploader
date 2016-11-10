@@ -1,25 +1,44 @@
-import request from './request';
-import React, {PropTypes} from 'react';
-import uid from './uid';
-
-const slice = [].silce;
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import defaultRequest from './request';
+import getUid from './uid';
+import assign from 'object-assign';
 
 const AjaxUploader = React.createClass({
   propTypes: {
+    component: PropTypes.string,
+    style: PropTypes.object,
+    prefixCls: PropTypes.string,
+    className: PropTypes.string,
     multiple: PropTypes.bool,
+    accept: PropTypes.string,
+    children: PropTypes.any,
     onStart: PropTypes.func,
+    headers: PropTypes.object,
     data: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.func,
     ]),
-    headers: PropTypes.object,
-    beforeUpload: PropTypes.func,
+    beforeUpload: PropTypes.func.isRequired,
+    customRequest: PropTypes.func,
     withCredentials: PropTypes.bool,
+  },
+
+  getInitialState() {
+    this.reqs = {};
+    return {
+      uid: getUid(),
+    };
+  },
+
+  componentWillUnmount() {
+    this.abort();
   },
 
   onChange(e) {
     const files = e.target.files;
     this.uploadFiles(files);
+    this.reset();
   },
 
   onClick() {
@@ -28,7 +47,6 @@ const AjaxUploader = React.createClass({
       return;
     }
     el.click();
-    el.value = '';
   },
 
   onKeyDown(e) {
@@ -39,7 +57,8 @@ const AjaxUploader = React.createClass({
 
   onFileDrop(e) {
     if (e.type === 'dragover') {
-      return e.preventDefault();
+      e.preventDefault();
+      return;
     }
 
     const files = e.dataTransfer.files;
@@ -48,61 +67,92 @@ const AjaxUploader = React.createClass({
   },
 
   uploadFiles(files) {
-    const len = files.length;
-    if (len > 0) {
-      for (let i=0; i<len; i++) {
-        const file = files.item(i);
-        file.uid = uid();
-        this.upload(file);
-      }
-      if (this.props.multiple) {
-        this.props.onStart(slice.call(files));
-      } else {
-        this.props.onStart(slice.call(files)[0]);
-      }
+    const postFiles = Array.prototype.slice.call(files);
+    const len = postFiles.length;
+    for (let i = 0; i < len; i++) {
+      const file = postFiles[i];
+      file.uid = getUid();
+      this.upload(file);
     }
   },
 
   upload(file) {
-    const props = this.props;
+    const { props } = this;
 
-    if (!props.beforeUpload) {
-      return this.post(file);
-    }
-
-    const before = props.beforeUpload;
+    const before = props.beforeUpload(file);
     if (before && before.then) {
-      before.then(() => {
-        this.post(file);
+      before.then(({ options, action, meta }) => {
+        const newfile = assign({}, file, meta);
+        this.post(file, options, action);
       });
-    } else if (before !== false) {
-      this.post(file);
     }
   },
 
-  post(file) {
-    const props = this.props;
-    let data = props.data;
+  post(file, newOptions, newAction) {
+    if (!this.isMounted()) {
+      return;
+    }
+
+    if (!newAction) {
+      props.onError(newOptions, newOptions, file);
+    }
+
+    const { props } = this;
+    let { data } = props;
+    const { onStart } = props;
     if (typeof data === 'function') {
       data = data(file);
     }
-    request({
-      action: props.action,
+    if (newOptions) {
+      data = newOptions;
+    }
+    const { uid } = file;
+    const request = defaultRequest;
+    this.reqs[uid] = request({
+      action: newAction,
       filename: props.name,
-      file: file,
-      data: data,
+      file,
+      data,
       headers: props.headers,
       withCredentials: props.withCredentials,
       onProgress: e => {
-        porps.onProgress(e, file);
+        props.onProgress(e, file);
       },
       onSuccess: ret => {
+        delete this.reqs[uid];
         props.onSuccess(ret, file);
       },
       onError: (err, ret) => {
+        delete this.reqs[uid];
         props.onError(err, ret, file);
       },
     });
+    onStart(file);
+  },
+
+  reset() {
+    this.setState({
+      uid: getUid(),
+    });
+  },
+
+  abort(file) {
+    const { reqs } = this;
+    if (file) {
+      let uid = file;
+      if (file && file.uid) {
+        uid = file.uid;
+      }
+      if (reqs[uid]) {
+        reqs[uid].abort();
+        delete reqs[uid];
+      }
+    } else {
+      Object.keys(reqs).forEach((uid) => {
+        reqs[uid].abort();
+        delete reqs[uid];
+      });
+    }
   },
 
   render() {

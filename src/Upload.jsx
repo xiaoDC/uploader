@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import AjaxUpload from './AjaxUploader';
-import IframeUpload from './IframeUploader';
 
 function empty() {
 }
@@ -50,7 +49,7 @@ const Upload = React.createClass({
 
   componentDidMount() {
     this.setState({
-      Component: typeof FormData !== 'undefined' ? AjaxUpload : IframeUpload,
+      Component: AjaxUpload,
     });
   },
 
@@ -61,7 +60,6 @@ const Upload = React.createClass({
     }
     return null;
   }
-
 });
 
 export default Upload;
