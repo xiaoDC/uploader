@@ -158,7 +158,7 @@ const AjaxUploader = React.createClass({
   render() {
     const hidden = { dispaly: 'none' };
     const props = this.props;
-    retrun (
+    return (
       <span
         onClick={this.onClick}
         onKeyDown={this.onKeyDown}
