@@ -82,7 +82,7 @@ const AjaxUploader = React.createClass({
     const before = props.beforeUpload(file);
     if (before && before.then) {
       before.then(({ options, action, meta }) => {
-        const newfile = assign({}, file, meta);
+        Object.keys(meta).forEach(key => file[key] = meta[key]);
         this.post(file, options, action);
       });
     }
