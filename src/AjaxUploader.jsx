@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import defaultRequest from './request';
 import getUid from './uid';
-import assign from 'object-assign';
 
 const AjaxUploader = React.createClass({
   propTypes: {
