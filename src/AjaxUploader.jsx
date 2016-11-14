@@ -155,7 +155,7 @@ const AjaxUploader = React.createClass({
   },
 
   render() {
-    const hidden = { dispaly: 'none' };
+    const hidden = { display: 'none' };
     const props = this.props;
     return (
       <span
