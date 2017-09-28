@@ -146,9 +146,9 @@ class AjaxUploader extends Component{
     const props = this.props;
     return (
       <span
-        onClick={this.onClick}
-        onKeyDown={this.onKeyDown}
-        onDrop={this.onFileDrop}
+        onClick={this.onClick.bind(this)}
+        onKeyDown={this.onKeyDown.bind(this)}
+        onDrop={this.onFileDrop.bind(this)}
         onDragOver={this.onFileDrop}
         role="button"
         tabIndex="0"
@@ -158,7 +158,7 @@ class AjaxUploader extends Component{
                style={hidden}
                accept={props.accept}
                multiple={this.props.multiple}
-               onChange={this.onChange}
+               onChange={this.onChange.bind(this)}
           />
         {props.children}
       </span>
