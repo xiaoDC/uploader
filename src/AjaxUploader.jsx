@@ -1,44 +1,29 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+
 import defaultRequest from './request';
 import getUid from './uid';
 
-const AjaxUploader = React.createClass({
-  propTypes: {
-    component: PropTypes.string,
-    style: PropTypes.object,
-    prefixCls: PropTypes.string,
-    className: PropTypes.string,
-    multiple: PropTypes.bool,
-    accept: PropTypes.string,
-    children: PropTypes.any,
-    onStart: PropTypes.func,
-    headers: PropTypes.object,
-    data: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
-    beforeUpload: PropTypes.func.isRequired,
-    customRequest: PropTypes.func,
-    withCredentials: PropTypes.bool,
-  },
+class AjaxUploader extends Component{
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
     this.reqs = {};
-    return {
+    this.state = {
       uid: getUid(),
     };
-  },
+  }
 
   componentWillUnmount() {
     this.abort();
-  },
+  }
 
   onChange(e) {
     const files = e.target.files;
     this.uploadFiles(files);
     this.reset();
-  },
+  }
 
   onClick() {
     const el =this.refs.file;
@@ -46,13 +31,13 @@ const AjaxUploader = React.createClass({
       return;
     }
     el.click();
-  },
+  }
 
   onKeyDown(e) {
     if (e.key == 'Enter') {
       this.onClick();
     }
-  },
+  }
 
   onFileDrop(e) {
     if (e.type === 'dragover') {
@@ -63,7 +48,7 @@ const AjaxUploader = React.createClass({
     const files = e.dataTransfer.files;
     this.uploadFiles(files);
     e.preventDefault();
-  },
+  }
 
   uploadFiles(files) {
     const postFiles = Array.prototype.slice.call(files);
@@ -73,7 +58,7 @@ const AjaxUploader = React.createClass({
       file.uid = getUid();
       this.upload(file);
     }
-  },
+  }
 
   upload(file) {
     const { props } = this;
@@ -87,7 +72,7 @@ const AjaxUploader = React.createClass({
         this.post(file, options, action);
       });
     }
-  },
+  }
 
   post(file, newOptions, newAction) {
     if (!this.isMounted()) {
@@ -129,13 +114,13 @@ const AjaxUploader = React.createClass({
       },
     });
     onStart(file);
-  },
+  }
 
   reset() {
     this.setState({
       uid: getUid(),
     });
-  },
+  }
 
   abort(file) {
     const { reqs } = this;
@@ -154,7 +139,7 @@ const AjaxUploader = React.createClass({
         delete reqs[uid];
       });
     }
-  },
+  }
 
   render() {
     const hidden = { display: 'none' };
@@ -178,8 +163,27 @@ const AjaxUploader = React.createClass({
         {props.children}
       </span>
     );
-  },
-});
+  }
+};
+
+AjaxUploader.propTypes = {
+  component: PropTypes.string,
+  style: PropTypes.object,
+  prefixCls: PropTypes.string,
+  className: PropTypes.string,
+  multiple: PropTypes.bool,
+  accept: PropTypes.string,
+  children: PropTypes.any,
+  onStart: PropTypes.func,
+  headers: PropTypes.object,
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+  ]),
+  beforeUpload: PropTypes.func.isRequired,
+  customRequest: PropTypes.func,
+  withCredentials: PropTypes.bool,
+};
 
 
 export default AjaxUploader;

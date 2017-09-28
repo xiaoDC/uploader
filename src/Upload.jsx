@@ -1,57 +1,26 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import AjaxUpload from './AjaxUploader';
 
 function empty() {
 }
 
 
-const Upload = React.createClass({
-  propTypes: {
-    action: PropTypes.string,
-    name: PropTypes.string,
-    multipart: PropTypes.bool,
-    onError: PropTypes.func,
-    onSuccess: PropTypes.func,
-    onProgress: PropTypes.func,
-    onStart: PropTypes.func,
-    data: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.func,
-    ]),
-    headers: PropTypes.object,
-    accept: PropTypes.string,
-    multiple: PropTypes.bool,
-    beforeUpload: PropTypes.func,
-    withCredentials: PropTypes.bool,
-  },
+class Upload extends Component{
+  constructor(props) {
+    super(props);
 
-  getDefaultProps() {
-    return {
-      data: {},
-      headers: {},
-      name: 'file',
-      multipart: false,
-      onProgress: empty,
-      onStart: empty,
-      onError: empty,
-      onSuccess: empty,
-      multiple: false,
-      beforeUpload: null,
-      withCredentials: false,
-    };
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       Component: null,
-    };
-  },
+    }
+  }
 
   componentDidMount() {
     this.setState({
       Component: AjaxUpload,
     });
-  },
+  }
 
   render() {
     const { Component } = this.state;
@@ -60,6 +29,38 @@ const Upload = React.createClass({
     }
     return null;
   }
-});
+}
+
+Upload.propTypes = {
+  action: PropTypes.string,
+  name: PropTypes.string,
+  multipart: PropTypes.bool,
+  onError: PropTypes.func,
+  onSuccess: PropTypes.func,
+  onProgress: PropTypes.func,
+  onStart: PropTypes.func,
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.func,
+  ]),
+  headers: PropTypes.object,
+  accept: PropTypes.string,
+  multiple: PropTypes.bool,
+  beforeUpload: PropTypes.func,
+  withCredentials: PropTypes.bool,
+};
+Upload.defaultProps = {
+  data: {},
+  headers: {},
+  name: 'file',
+  multipart: false,
+  onProgress: empty,
+  onStart: empty,
+  onError: empty,
+  onSuccess: empty,
+  multiple: false,
+  beforeUpload: null,
+  withCredentials: false,
+};
 
 export default Upload;
