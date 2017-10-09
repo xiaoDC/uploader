@@ -149,7 +149,7 @@ class AjaxUploader extends Component{
         onClick={this.onClick.bind(this)}
         onKeyDown={this.onKeyDown.bind(this)}
         onDrop={this.onFileDrop.bind(this)}
-        onDragOver={this.onFileDrop}
+        onDragOver={this.onFileDrop.bind(this)}
         role="button"
         tabIndex="0"
         >
