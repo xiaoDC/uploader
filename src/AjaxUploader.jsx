@@ -75,9 +75,9 @@ class AjaxUploader extends Component{
   }
 
   post(file, newOptions, newAction) {
-    if (!this.isMounted()) {
-      return;
-    }
+    // if (!this.isMounted()) {
+    //   return;
+    // }
 
     if (!newAction) {
       props.onError(newOptions, newOptions, file);
